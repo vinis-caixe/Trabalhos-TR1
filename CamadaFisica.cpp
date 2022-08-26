@@ -1,8 +1,8 @@
 #include "CamadaFisica.hpp"
 
-void CamadaFisicaTransmissora(std::vector<bool> quadro){
-    int tipoDeCodificacao = 0; //alterar de acordo com o teste 
-    std::vector<bool> fluxoBrutoDeBits; //atenção: trabalhar com bits!
+void CamadaFisicaTransmissora(std::vector<int> quadro){
+    int tipoDeCodificacao = 1; //alterar de acordo com o teste 
+    std::vector<int> fluxoBrutoDeBits; //atenção: trabalhar com bits!
 
     switch(tipoDeCodificacao){
         case 0:
@@ -20,33 +20,36 @@ void CamadaFisicaTransmissora(std::vector<bool> quadro){
 }
 
 // FUNCOES DE CODIFICACAO
-std::vector<bool> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
+std::vector<int> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
 
 
 
     return fluxoBrutoDeBits;
 }
 
-std::vector<bool> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
+std::vector<int> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
+
+    for(int i = 0; i < quadro.size(); i++){
+        fluxoBrutoDeBits.push_back(quadro[i] ^ 0);
+        fluxoBrutoDeBits.push_back(quadro[i] ^ 1);
+    }
+
+    return fluxoBrutoDeBits;
+}
+
+std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
 
     
 
     return fluxoBrutoDeBits;
 }
 
-std::vector<bool> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
-
-    
-
-    return fluxoBrutoDeBits;
-}
-
-void MeioDeComunicacao(std::vector<bool> fluxoBrutoDeBits){
+void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
     //OBS IMPORTANTE: trabalhar com BITS e nao com BYTES
-    std::vector<bool>  fluxoBrutoDeBitsPontoA, fluxoBrutoDeBitsPontoB;
+    std::vector<int>  fluxoBrutoDeBitsPontoA, fluxoBrutoDeBitsPontoB;
     int i;
 
     fluxoBrutoDeBitsPontoA = fluxoBrutoDeBits;
@@ -58,9 +61,9 @@ void MeioDeComunicacao(std::vector<bool> fluxoBrutoDeBits){
     CamadaFisicaReceptora(fluxoBrutoDeBitsPontoB);
 }
 
-void CamadaFisicaReceptora(std::vector<bool> quadro){
-    int tipoDeDecodificacao = 0; //alterar de acordo com o teste
-    std::vector<bool> fluxoBrutoDeBits;
+void CamadaFisicaReceptora(std::vector<int> quadro){
+    int tipoDeDecodificacao = 1; //alterar de acordo com o teste
+    std::vector<int> fluxoBrutoDeBits;
 
     switch(tipoDeDecodificacao){
         case 0:
@@ -78,37 +81,50 @@ void CamadaFisicaReceptora(std::vector<bool> quadro){
 }
 
 // FUNCOES DE DECODIFICACAO
-std::vector<bool> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
+std::vector<int> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
 
     
 
     return fluxoBrutoDeBits;
 }
 
-std::vector<bool> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
+std::vector<int> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
+    int bit1, bit2;
 
-    
+    for(int i = 0; i < quadro.size(); i = i + 2){
+        bit1 = quadro[i];
+        bit2 = quadro[i+1];
 
-    return fluxoBrutoDeBits;
-}
+        if(bit1 == 0 && bit2 == 1){
+            fluxoBrutoDeBits.push_back(0);
+        }
 
-std::vector<bool> CamadaFisicaReceptoraDecodificacaoBipolar(std::vector<bool> quadro){
-    std::vector<bool> fluxoBrutoDeBits;
-
-    
-
-    return fluxoBrutoDeBits;
-}
-
-void CamadaDeAplicacaoReceptora(std::vector<bool> quadro){
-    std::string mensagem;
-    int i;
-
-    for(i = 0; i < quadro.size(); i++){
-        quadro[i] ? mensagem + '1' : mensagem + '0';
+        if(bit1 == 1 && bit2 == 0){
+            fluxoBrutoDeBits.push_back(1);
+        }
     }
+
+    return fluxoBrutoDeBits;
+}
+
+std::vector<int> CamadaFisicaReceptoraDecodificacaoBipolar(std::vector<int> quadro){
+    std::vector<int> fluxoBrutoDeBits;
+
+    
+
+    return fluxoBrutoDeBits;
+}
+
+void CamadaDeAplicacaoReceptora(std::vector<int> quadro){
+    std::string mensagem;
+
+    for(int i = 0; i < quadro.size(); i++){
+        quadro[i] ? mensagem = mensagem + '1' : mensagem = mensagem + '0';
+    }
+
+    //TODO transformar vetor de inteiros para string original
 
     AplicacaoReceptora(mensagem);
 }
