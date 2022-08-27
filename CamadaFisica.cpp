@@ -22,8 +22,7 @@ void CamadaFisicaTransmissora(std::vector<int> quadro){
 // FUNCOES DE CODIFICACAO
 std::vector<int> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
-
-
+    fluxoBrutoDeBits = quadro;
 
     return fluxoBrutoDeBits;
 }
@@ -41,7 +40,17 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<int> 
 
 std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
+    int polaridade = 1;
 
+    for (int i = 0; i < quadro.size(); i++){
+        if (quadro[i] == 1){
+            fluxoBrutoDeBits.push_back(quadro[i] * polaridade);
+            polaridade = polaridade * (-1);
+        }
+        else if (quadro[i] == 0){
+            fluxoBrutoDeBits.push_back((quadro[i]));
+        }
+    }
     
 
     return fluxoBrutoDeBits;
@@ -62,7 +71,7 @@ void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
 }
 
 void CamadaFisicaReceptora(std::vector<int> quadro){
-    int tipoDeDecodificacao = 1; //alterar de acordo com o teste
+    int tipoDeDecodificacao = 0; //alterar de acordo com o teste
     std::vector<int> fluxoBrutoDeBits;
 
     switch(tipoDeDecodificacao){
@@ -84,7 +93,7 @@ void CamadaFisicaReceptora(std::vector<int> quadro){
 std::vector<int> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
 
-    
+    fluxoBrutoDeBits = quadro;
 
     return fluxoBrutoDeBits;
 }
@@ -112,7 +121,14 @@ std::vector<int> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<int> q
 std::vector<int> CamadaFisicaReceptoraDecodificacaoBipolar(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
 
-    
+    for (int i = 0; i < quadro.size(); i++){
+        if (quadro[i] == 1 || quadro[i] == -1){
+            fluxoBrutoDeBits.push_back(1);
+        }
+        else if (quadro[i] == 0){
+            fluxoBrutoDeBits.push_back(0);
+        }
+    }
 
     return fluxoBrutoDeBits;
 }
