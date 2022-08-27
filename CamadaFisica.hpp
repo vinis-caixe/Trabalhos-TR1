@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <bitset>
 
 void CamadaFisicaTransmissora(std::vector<int> quadro);
 

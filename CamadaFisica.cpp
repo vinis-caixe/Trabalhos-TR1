@@ -1,7 +1,7 @@
 #include "CamadaFisica.hpp"
 
 void CamadaFisicaTransmissora(std::vector<int> quadro){
-    int tipoDeCodificacao = 1; //alterar de acordo com o teste 
+    int tipoDeCodificacao = 2; //alterar de acordo com o teste 
     std::vector<int> fluxoBrutoDeBits; //atenção: trabalhar com bits!
 
     switch(tipoDeCodificacao){
@@ -52,7 +52,6 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> qua
         }
     }
     
-
     return fluxoBrutoDeBits;
 }
 
@@ -71,7 +70,7 @@ void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
 }
 
 void CamadaFisicaReceptora(std::vector<int> quadro){
-    int tipoDeDecodificacao = 0; //alterar de acordo com o teste
+    int tipoDeDecodificacao = 2; //alterar de acordo com o teste
     std::vector<int> fluxoBrutoDeBits;
 
     switch(tipoDeDecodificacao){
@@ -141,6 +140,18 @@ void CamadaDeAplicacaoReceptora(std::vector<int> quadro){
     }
 
     //TODO transformar vetor de inteiros para string original
+
+    std::bitset<8> byte;
+    std::string msgreal;
+
+    for (int i = 0; i < quadro.size(); i += 8){
+        for (int j = 0; j < 8; j++){
+            byte[7 - j] = quadro[i + j];
+        }
+        msgreal += char(byte.to_ulong());
+    }
+
+    std::cout << "A mensagem recebida traduzida foi: " << msgreal << std::endl;
 
     AplicacaoReceptora(mensagem);
 }

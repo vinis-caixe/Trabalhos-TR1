@@ -29,7 +29,7 @@ void CamadaDeAplicacaoTransmissora(string mensagem){
 void AplicacaoTransmissora(){
     string mensagem;
     cout << "Digite uma mensagem:" << endl;
-    cin >> mensagem;
+    std::getline(cin, mensagem);
 
     CamadaDeAplicacaoTransmissora(mensagem);
 }
