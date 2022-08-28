@@ -1,8 +1,15 @@
 #include "CamadaFisica.hpp"
 
+// Realiza a codificação do quadro de bits, e encaminha os dados
+// para o Meio de Comunicação.
+//
+// Tipo de codificação:
+//      1 - Binária
+//      2 - Manchester
+//      3 - Bipolar
 void CamadaFisicaTransmissora(std::vector<int> quadro){
-    int tipoDeCodificacao = 2; //alterar de acordo com o teste 
-    std::vector<int> fluxoBrutoDeBits; //atenção: trabalhar com bits!
+    int tipoDeCodificacao = 2; // Tipo de Codificação
+    std::vector<int> fluxoBrutoDeBits; // Trabalhando com bits, e não bytes
 
     switch(tipoDeCodificacao){
         case 0:
@@ -19,7 +26,7 @@ void CamadaFisicaTransmissora(std::vector<int> quadro){
     MeioDeComunicacao(fluxoBrutoDeBits);
 }
 
-// FUNCOES DE CODIFICACAO
+// Realiza a codificação Binária no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
     fluxoBrutoDeBits = quadro;
@@ -27,6 +34,7 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<int> qua
     return fluxoBrutoDeBits;
 }
 
+// Realiza a codificação Manchester no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
 
@@ -38,6 +46,7 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<int> 
     return fluxoBrutoDeBits;
 }
 
+// Realiza a codificação Bipolar no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
     int polaridade = 1;
@@ -55,8 +64,9 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> qua
     return fluxoBrutoDeBits;
 }
 
+// Simula o meio físico de comunicação, e encaminha os dados para
+// a Camada Receptora.
 void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
-    //OBS IMPORTANTE: trabalhar com BITS e nao com BYTES
     std::vector<int>  fluxoBrutoDeBitsPontoA, fluxoBrutoDeBitsPontoB;
     int i;
 
@@ -69,8 +79,15 @@ void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
     CamadaFisicaReceptora(fluxoBrutoDeBitsPontoB);
 }
 
+// Realiza a decodificação do quadro de bits recebido,
+// e encaminha os dados para o Camada Receptora.
+//
+// Tipo de decodificação:
+//      1 - Binária
+//      2 - Manchester
+//      3 - Bipolar
 void CamadaFisicaReceptora(std::vector<int> quadro){
-    int tipoDeDecodificacao = 2; //alterar de acordo com o teste
+    int tipoDeDecodificacao = 2; // Tipo de Decodificação
     std::vector<int> fluxoBrutoDeBits;
 
     switch(tipoDeDecodificacao){
@@ -88,7 +105,7 @@ void CamadaFisicaReceptora(std::vector<int> quadro){
     CamadaDeAplicacaoReceptora(fluxoBrutoDeBits);
 }
 
-// FUNCOES DE DECODIFICACAO
+// Realiza a decodificação Binária no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
 
@@ -97,6 +114,7 @@ std::vector<int> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<int> quad
     return fluxoBrutoDeBits;
 }
 
+// Realiza a decodificação Manchester no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
     int bit1, bit2;
@@ -117,6 +135,7 @@ std::vector<int> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<int> q
     return fluxoBrutoDeBits;
 }
 
+// Realiza a decodificação Bipolar no quadro de bits, e retorna o resultado.
 std::vector<int> CamadaFisicaReceptoraDecodificacaoBipolar(std::vector<int> quadro){
     std::vector<int> fluxoBrutoDeBits;
 
@@ -132,6 +151,8 @@ std::vector<int> CamadaFisicaReceptoraDecodificacaoBipolar(std::vector<int> quad
     return fluxoBrutoDeBits;
 }
 
+// Transforma o quadro de bits em uma string binária,
+// e mostra os caracteres da mensagem original na tela.
 void CamadaDeAplicacaoReceptora(std::vector<int> quadro){
     std::string mensagem;
 
@@ -139,23 +160,22 @@ void CamadaDeAplicacaoReceptora(std::vector<int> quadro){
         quadro[i] ? mensagem = mensagem + '1' : mensagem = mensagem + '0';
     }
 
-    //TODO transformar vetor de inteiros para string original
-
     std::bitset<8> byte;
-    std::string msgreal;
+    std::string mensagem_original;
 
     for (int i = 0; i < quadro.size(); i += 8){
         for (int j = 0; j < 8; j++){
             byte[7 - j] = quadro[i + j];
         }
-        msgreal += char(byte.to_ulong());
+        mensagem_original += char(byte.to_ulong());
     }
 
-    std::cout << "A mensagem recebida traduzida foi: " << msgreal << std::endl;
+    std::cout << "A mensagem recebida traduzida foi: " << mensagem_original << std::endl;
 
     AplicacaoReceptora(mensagem);
 }
 
+// Mostra a mensagem recebida em bits na tela.
 void AplicacaoReceptora(std::string mensagem){
     std::cout << "A mensagem recebida foi: " << mensagem << std::endl;
 }

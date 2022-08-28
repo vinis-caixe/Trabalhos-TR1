@@ -4,14 +4,14 @@
 #include <bitset>
 #include "CamadaFisica.hpp"
 
-using namespace std;
-
-void CamadaDeAplicacaoTransmissora(string mensagem){
-    vector<int> quadro; // trabalhar com bits!
-    string mensagemBits;
+// Converte uma mensagem no formato de string em um quadro de bits,
+// e encaminha os dados para a Camada Transmissora.
+void CamadaDeAplicacaoTransmissora(std::string mensagem){
+    std::vector<int> quadro;
+    std::string mensagemBits;
 
     for(size_t i = 0; i < mensagem.size(); i++){
-        mensagemBits = mensagemBits + bitset<8>(mensagem.c_str()[i]).to_string();
+        mensagemBits = mensagemBits + std::bitset<8>(mensagem.c_str()[i]).to_string();
     }
 
     for(int i = 0; i < mensagemBits.size(); i++){
@@ -26,16 +26,17 @@ void CamadaDeAplicacaoTransmissora(string mensagem){
     CamadaFisicaTransmissora(quadro);
 }
 
+// Recebe uma mensagem do usuário no formato de string
+// e encaminha a mensagem para a Camada de Transmissão.
 void AplicacaoTransmissora(){
-    string mensagem;
-    cout << "Digite uma mensagem:" << endl;
-    std::getline(cin, mensagem);
+    std::string mensagem;
+    std::cout << "Digite uma mensagem:" << std::endl;
+    std::getline(std::cin, mensagem);
 
     CamadaDeAplicacaoTransmissora(mensagem);
 }
 
 int main(){
     AplicacaoTransmissora();
-
     return 0;
 }

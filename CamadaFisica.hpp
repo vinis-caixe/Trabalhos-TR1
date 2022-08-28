@@ -3,6 +3,8 @@
 #include <string>
 #include <bitset>
 
+// Definições das funções utilizadas para simular a Camada Física.
+
 void CamadaFisicaTransmissora(std::vector<int> quadro);
 
 std::vector<int> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<int> quadro);
