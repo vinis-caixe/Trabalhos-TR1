@@ -71,7 +71,7 @@ void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
     int erro, porcentagemDeErros;
     std::vector<int>  fluxoBrutoDeBitsPontoA, fluxoBrutoDeBitsPontoB;
 
-    porcentagemDeErros = 1; // 10%, 20%, ..., 100%
+    porcentagemDeErros = 0; // 10%, 20%, ..., 100%
     fluxoBrutoDeBitsPontoA = fluxoBrutoDeBits;
     for(int i = 0; i < fluxoBrutoDeBitsPontoA.size(); i++){
         bool flip = (rand() % 100 < porcentagemDeErros);
