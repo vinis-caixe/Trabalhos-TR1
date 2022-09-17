@@ -2,6 +2,8 @@
 #include <vector>
 #include <bitset>
 #include <string>
+#include <bits/stdc++.h>
+#include <algorithm>
 
 void CamadaEnlaceDadosTransmissora(std::vector<int> quadro);
 

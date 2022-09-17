@@ -54,7 +54,7 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::
 }
 
 std::vector<int> CamadaEnlaceTransmissoraControleDeErro(std::vector<int> quadro) {
-    int tipoDeControleDeErro = 0;
+    int tipoDeControleDeErro = 2;
     std::vector<int> quadroControleErro;
 
     switch (tipoDeControleDeErro) {
@@ -91,7 +91,38 @@ std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<int>
 
 // Realiza controle de erro da transmissão utilizando o Código de Hamming
 std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<int> quadro) {
-    // implementar
+    int bitsVerificacao = 2, bitsDados = 1, posicao = 1;
+
+    while(quadro.size() >= bitsDados){
+        bitsVerificacao++;
+        bitsDados = (round(pow(2, bitsVerificacao)) - bitsVerificacao) - 1;
+    }
+
+    for(int i = 0; i < bitsVerificacao; i++){
+        quadro.insert((quadro.begin() + posicao - 1), 0);
+        posicao *= 2;
+    }
+
+    std::vector<bool> bitsParidade(bitsVerificacao, 0);
+
+    for(int i = 0; i < quadro.size(); i++){
+        std::bitset<8> byte(i+1);
+        std::string byteMensagem = byte.to_string();
+        std::reverse(byteMensagem.begin(), byteMensagem.end());
+
+        for(int j = 0; j < byteMensagem.size(); j++){
+            if(byteMensagem[j] == '1' && bitsVerificacao >= (j-1)){
+                bitsParidade[j] = bitsParidade[j] ^ quadro[i];
+            }
+        }
+    }
+
+    posicao = 1;
+    for(int i = 0; i < bitsParidade.size(); i++){
+        quadro[posicao - 1] = bitsParidade[i];
+        posicao *= 2;
+    }
+
     return quadro;
 }
 
@@ -148,7 +179,7 @@ std::vector<int> CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<i
 }
 
 std::vector<int> CamadaEnlaceReceptoraControleDeErro(std::vector<int> quadro) {
-    int tipoDeControleDeErro = 0;
+    int tipoDeControleDeErro = 2;
     std::vector<int> quadroControleErro;
 
     switch (tipoDeControleDeErro) {
