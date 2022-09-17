@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdlib>
 #include <bitset>
 
 // Definições das funções utilizadas para simular a Camada Física.

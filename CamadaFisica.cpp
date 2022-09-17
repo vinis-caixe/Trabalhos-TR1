@@ -68,13 +68,14 @@ std::vector<int> CamadaFisicaTransmissoraCodificacaoBipolar(std::vector<int> qua
 // Simula o meio físico de comunicação, e encaminha os dados para
 // a Camada Receptora.
 void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
+    int erro, porcentagemDeErros;
     std::vector<int>  fluxoBrutoDeBitsPontoA, fluxoBrutoDeBitsPontoB;
-    int i;
 
+    porcentagemDeErros = 1; // 10%, 20%, ..., 100%
     fluxoBrutoDeBitsPontoA = fluxoBrutoDeBits;
-
-    for(i = 0; i < fluxoBrutoDeBitsPontoA.size(); i++){
-        fluxoBrutoDeBitsPontoB.push_back(fluxoBrutoDeBitsPontoA[i]);
+    for(int i = 0; i < fluxoBrutoDeBitsPontoA.size(); i++){
+        bool flip = (rand() % 100 < porcentagemDeErros);
+        fluxoBrutoDeBitsPontoB.push_back(flip ^ fluxoBrutoDeBitsPontoA[i]);
     }
 
     CamadaFisicaReceptora(fluxoBrutoDeBitsPontoB);

@@ -2,11 +2,13 @@
 #include "CamadaFisica.hpp"
 
 void CamadaEnlaceDadosTransmissora(std::vector<int> quadro){
-    std::vector<int> quadroEnquadrado;
+    std::vector<int> quadroEnquadrado, quadroControleDeErro;
 
     quadroEnquadrado = CamadaEnlaceDadosTransmissoraEnquadramento(quadro);
 
-    CamadaFisicaTransmissora(quadroEnquadrado);
+    quadroControleDeErro = CamadaEnlaceTransmissoraControleDeErro(quadroEnquadrado);
+
+    CamadaFisicaTransmissora(quadroControleDeErro);
 
 }
 
@@ -51,30 +53,68 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::
     return quadro;
 }
 
-void CamadaEnlaceDadosReceptora(std::vector<int> quadro){
-    std::vector<int> quadroDesenquadrado;
+std::vector<int> CamadaEnlaceTransmissoraControleDeErro(std::vector<int> quadro) {
+    int tipoDeControleDeErro = 0;
+    std::vector<int> quadroControleErro;
 
-    quadroDesenquadrado = CamadaDeEnlaceReceptoraEnquadramento(quadro);
+    switch (tipoDeControleDeErro) {
+        case 0: // bit de paridade par
+            quadroControleErro = CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
+            break;
+        case 1: // CRC
+            quadroControleErro = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+            break;
+        case 2: // codigo de hamming
+            quadroControleErro = CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(quadro);
+            break;
+    }
 
-    CamadaDeAplicacaoReceptora(quadroDesenquadrado);
+    return quadroControleErro;
 }
-std::vector<int> CamadaDeEnlaceReceptoraEnquadramento(std::vector<int> quadro){
+
+
+std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<int> quadro) {
+    // implementar
+    return quadro;
+}
+
+std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<int> quadro) {
+    // implementar // usar polinomio CRC-32(IEEE 802)
+    return quadro;
+}
+
+std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<int> quadro) {
+    // implementar
+    return quadro;
+}
+
+void CamadaEnlaceDadosReceptora(std::vector<int> quadro){
+    std::vector<int> quadroDesenquadrado, quadroControleDeErro;
+
+    quadroDesenquadrado = CamadaEnlaceReceptoraEnquadramento(quadro);
+
+    quadroControleDeErro = CamadaEnlaceReceptoraControleDeErro(quadroDesenquadrado);
+
+    CamadaDeAplicacaoReceptora(quadroControleDeErro);
+}
+
+std::vector<int> CamadaEnlaceReceptoraEnquadramento(std::vector<int> quadro){
     int tipoDeEnquadramento = 0;
     std::vector<int> quadroDesenquadrado;
     
     switch(tipoDeEnquadramento){
         case 0:
-            quadroDesenquadrado = CamadaDeEnlaceReceptoraEnquadramentoContagemDeCaracteres(quadro);
+            quadroDesenquadrado = CamadaEnlaceReceptoraEnquadramentoContagemDeCaracteres(quadro);
             break;
         case 1:
-            quadroDesenquadrado = CamadaDeEnlaceReceptoraEnquadramentoInsercaoDeBytes(quadro);
+            quadroDesenquadrado = CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(quadro);
             break;
     }
 
     return quadroDesenquadrado;
 }
 
-std::vector<int> CamadaDeEnlaceReceptoraEnquadramentoContagemDeCaracteres(std::vector<int> quadro){
+std::vector<int> CamadaEnlaceReceptoraEnquadramentoContagemDeCaracteres(std::vector<int> quadro){
     std::bitset<8> byte;
     int tamanho;
     int j = 7;
@@ -96,6 +136,40 @@ std::vector<int> CamadaDeEnlaceReceptoraEnquadramentoContagemDeCaracteres(std::v
     return quadro;
 }
 
-std::vector<int> CamadaDeEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
+std::vector<int> CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
+    return quadro;
+}
+
+std::vector<int> CamadaEnlaceReceptoraControleDeErro(std::vector<int> quadro) {
+    int tipoDeControleDeErro = 0;
+    std::vector<int> quadroControleErro;
+
+    switch (tipoDeControleDeErro) {
+        case 0: // bit de paridade par
+            quadroControleErro = CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(quadro);
+            break;
+        case 1: // CRC
+            quadroControleErro = CamadaEnlaceDadosReceptoraControleDeErroCRC(quadro);
+            break;
+        case 2: // codigo de hamming
+            quadroControleErro = CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(quadro);
+            break;
+    }
+
+    return quadroControleErro;
+}
+
+std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<int> quadro) {
+    // impementar
+    return quadro;
+}
+
+std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<int> quadro) {
+    // impementar
+    return quadro;
+}
+
+std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<int> quadro) {
+    // impementar
     return quadro;
 }
