@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <bitset>
-#include "CamadaFisica.hpp"
+#include "CamadaEnlace.hpp"
 
 // Converte uma mensagem no formato de string em um quadro de bits,
 // e encaminha os dados para a Camada Transmissora.
@@ -23,7 +23,7 @@ void CamadaDeAplicacaoTransmissora(std::string mensagem){
         }
     }
 
-    CamadaFisicaTransmissora(quadro);
+    CamadaEnlaceDadosTransmissora(quadro);
 }
 
 // Recebe uma mensagem do usuário no formato de string

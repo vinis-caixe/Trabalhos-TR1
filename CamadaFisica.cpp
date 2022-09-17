@@ -1,4 +1,5 @@
 #include "CamadaFisica.hpp"
+#include "CamadaEnlace.hpp"
 
 // Realiza a codificação do quadro de bits, e encaminha os dados
 // para o Meio de Comunicação.
@@ -102,7 +103,7 @@ void CamadaFisicaReceptora(std::vector<int> quadro){
             break;
     }
 
-    CamadaDeAplicacaoReceptora(fluxoBrutoDeBits);
+    CamadaEnlaceDadosReceptora(fluxoBrutoDeBits);
 }
 
 // Realiza a decodificação Binária no quadro de bits, e retorna o resultado.
