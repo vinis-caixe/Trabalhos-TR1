@@ -72,17 +72,24 @@ std::vector<int> CamadaEnlaceTransmissoraControleDeErro(std::vector<int> quadro)
     return quadroControleErro;
 }
 
-
+// Realiza controle de erro da transmissão utilizando método de Bit de Paridade Par
 std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<int> quadro) {
-    // implementar
+    bool bitParidade = 0;
+    for (int i = 0; i < quadro.size(); i++) {
+        bitParidade ^= quadro[i];
+    }
+    quadro.push_back(bitParidade);
+
     return quadro;
 }
 
+// Realiza controle de erro da transmissão utilizando o Código de Redundância Cíclica
 std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<int> quadro) {
     // implementar // usar polinomio CRC-32(IEEE 802)
     return quadro;
 }
 
+// Realiza controle de erro da transmissão utilizando o Código de Hamming
 std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<int> quadro) {
     // implementar
     return quadro;
@@ -160,7 +167,14 @@ std::vector<int> CamadaEnlaceReceptoraControleDeErro(std::vector<int> quadro) {
 }
 
 std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<int> quadro) {
-    // impementar
+    bool bitParidade = 0;
+    for (int i = 0; i < quadro.size(); i++) {
+        bitParidade ^= quadro[i];
+    }
+    if (bitParidade) {
+        std::cout << "Erro identificado utilizando método de bit de paridade!" << std::endl;
+    }
+    quadro.pop_back();
     return quadro;
 }
 
