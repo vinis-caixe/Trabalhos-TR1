@@ -9,7 +9,7 @@
 //      2 - Manchester
 //      3 - Bipolar
 void CamadaFisicaTransmissora(std::vector<int> quadro){
-    int tipoDeCodificacao = 2; // Tipo de Codificação
+    int tipoDeCodificacao = 0; // Tipo de Codificação
     std::vector<int> fluxoBrutoDeBits; // Trabalhando com bits, e não bytes
 
     switch(tipoDeCodificacao){
@@ -89,7 +89,7 @@ void MeioDeComunicacao(std::vector<int> fluxoBrutoDeBits){
 //      2 - Manchester
 //      3 - Bipolar
 void CamadaFisicaReceptora(std::vector<int> quadro){
-    int tipoDeDecodificacao = 2; // Tipo de Decodificação
+    int tipoDeDecodificacao = 0; // Tipo de Decodificação
     std::vector<int> fluxoBrutoDeBits;
 
     switch(tipoDeDecodificacao){

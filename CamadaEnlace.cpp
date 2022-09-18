@@ -129,11 +129,11 @@ std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std:
 void CamadaEnlaceDadosReceptora(std::vector<int> quadro){
     std::vector<int> quadroDesenquadrado, quadroControleDeErro;
 
-    quadroDesenquadrado = CamadaEnlaceReceptoraEnquadramento(quadro);
+    quadroControleDeErro = CamadaEnlaceReceptoraControleDeErro(quadro);
 
-    quadroControleDeErro = CamadaEnlaceReceptoraControleDeErro(quadroDesenquadrado);
+    quadroDesenquadrado = CamadaEnlaceReceptoraEnquadramento(quadroControleDeErro);
 
-    CamadaDeAplicacaoReceptora(quadroControleDeErro);
+    CamadaDeAplicacaoReceptora(quadroDesenquadrado);
 }
 
 std::vector<int> CamadaEnlaceReceptoraEnquadramento(std::vector<int> quadro){
@@ -215,6 +215,46 @@ std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<int> qu
 }
 
 std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<int> quadro) {
-    // impementar
+    int bitsVerificacao = 2, bitsDados = 3, posicao;
+
+    while(quadro.size() >= bitsDados){
+        bitsVerificacao++;
+        bitsDados = round(pow(2, bitsVerificacao)) - 1;
+    }
+
+    std::vector<bool> bitsParidade(bitsVerificacao, 0);
+
+    for(int i = 0; i < quadro.size(); i++){
+        std::bitset<8> byte(i+1);
+        std::string byteMensagem = byte.to_string();
+        std::reverse(byteMensagem.begin(), byteMensagem.end());
+
+        for(int j = 0; j < byteMensagem.size(); j++){
+            if(byteMensagem[j] == '1' && bitsVerificacao >= (j-1)){
+                bitsParidade[j] = bitsParidade[j] ^ quadro[i];
+            }
+        }
+    }
+
+    posicao = 0;
+    if(std::find(bitsParidade.begin(), bitsParidade.end(), 1) != bitsParidade.end()){
+        for(int i = 0; i < bitsParidade.size(); i++){
+            if(bitsParidade[i] == 1){
+                posicao += round(pow(2, i));
+            }
+        }
+        std::cout << "Erro! Detectado troca de bit na posição " << posicao << ". Corrigindo erro...\n";
+        if(quadro[posicao-1] == 1){
+            quadro[posicao-1] = 0;
+        }
+        else{
+            quadro[posicao-1] = 1;
+        }
+    }
+
+    for(int i = 0; i < bitsVerificacao; i++){
+        quadro.erase(quadro.begin() + (round(pow(2, i)) - (1+i)));
+    }
+
     return quadro;
 }
