@@ -50,11 +50,37 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(
 }
 
 std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
-    std::vector<int> flag = {0,0,0,0,1,1,1,1};
-    // Insere flag no inicio do quadro.
-    quadro.insert(quadro.begin(), flag.begin(), flag.end());
-    // Insere flag no final do quadro.
-    quadro.insert(quadro.end(), flag.begin(), flag.end());
+    int quantidade = quadro.size() /8;
+    std::bitset<8> byte;
+    std::bitset<8> flag{"01001001"}; //I
+    std::bitset<8> scape{"11111110"};
+
+    int k,j,i,l;
+
+    for( k = 0; k < quantidade; k++){
+        for(i = 0; i < 8; i++){
+            byte[7-i] = quadro[ (8*k) + i ];
+        }
+
+        if(byte == flag || byte == scape){
+            l=0;
+            for(j = ((8*k) + i) - 8 ; j < (8*k) + i ;j++){
+                quadro.insert(quadro.begin()+j, scape[7-l]);
+                l++;
+            }
+            quantidade+=1;
+            k+=1;
+            
+        }
+    }
+   
+    for(i=0;i<8;i++){
+        quadro.insert(quadro.begin(),flag[i]);
+    }
+    for(i=0;i<8;i++){
+        quadro.insert(quadro.end(),flag[7-i]);
+
+    }
 
     return quadro;
 }
@@ -215,23 +241,53 @@ std::vector<int> CamadaEnlaceReceptoraEnquadramentoContagemDeCaracteres(std::vec
 }
 
 std::vector<int> CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
-    std::vector<int> flag = {0,0,0,0,1,1,1,1};
-    int flag_size = flag.size();
-    int quadro_size = quadro.size();
-    bool flags_found = true;
-    for (int i = 0; i < flag_size; i++) {
-        if (quadro[i] != flag[i] or quadro[quadro_size-flag_size+i] != flag[i]) {
+    int quantidade = quadro.size();
+    std::bitset<8> byte;
+    std::bitset<8> flag{"01001001"}; //I
+    std::bitset<8> scape{"11111110"};
+    bool flags_found = true, scape_found = true;
+
+    int k,j,i,l;
+
+    for ( i = 0; i < 8; i++) {
+        if (quadro[i] != flag[i] or quadro[quantidade-8+i] != flag[i]) {
             flags_found = false;
         }
     }
 
-    if (!flags_found) {
-        std::cout << "Quadro recebido é diferente do enviado!\n";
-    }
-
-    for (int i = 0; i < flag_size; i++) {
+    for (i = 0; i < 8; i++) {
         quadro.erase(quadro.begin());
         quadro.pop_back();
+    }
+
+    quantidade = quadro.size()/8;
+    flags_found = true; 
+    scape_found = true;
+
+    for( k = 0; k < quantidade; k++){
+        for(i = 0; i < 8; i++){
+            byte[7-i] = quadro[ (8*k) + i ];
+        }
+
+        if( byte == scape){
+            l=0;
+            for(j = ((8*k) + i) ; j < (8*k) + i + 8 ;j++){
+                if(flag[7-l] != quadro[j])
+                    flags_found = false;
+                if(scape[7-l] != quadro[j])
+                    scape_found = false;
+                l++;            
+            }
+            if(flags_found == false && scape_found == false){
+                std::cout << "Quadro recebido é diferente do enviado!\n";
+            }else{
+                for(j = ((8*k) + i) - 8  ; j < (8*k) + i  ;j++){
+                    quadro.erase(quadro.begin() + ((8*k) + i) - 8) ;
+                }
+            }
+            quantidade-=1;
+            k+=1;   
+        }
     }
 
     return quadro;
