@@ -13,7 +13,7 @@ void CamadaEnlaceDadosTransmissora(std::vector<int> quadro){
 }
 
 std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<int> quadro){
-    int tipoDeEnquadramento = 0;
+    int tipoDeEnquadramento = 1;
     std::vector<int> quadroEnquadrado;
 
     switch(tipoDeEnquadramento){
@@ -50,6 +50,12 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(
 }
 
 std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
+    std::vector<int> flag = {0,0,0,0,1,1,1,1};
+    // Insere flag no inicio do quadro.
+    quadro.insert(quadro.begin(), flag.begin(), flag.end());
+    // Insere flag no final do quadro.
+    quadro.insert(quadro.end(), flag.begin(), flag.end());
+
     return quadro;
 }
 
@@ -171,7 +177,7 @@ void CamadaEnlaceDadosReceptora(std::vector<int> quadro){
 }
 
 std::vector<int> CamadaEnlaceReceptoraEnquadramento(std::vector<int> quadro){
-    int tipoDeEnquadramento = 0;
+    int tipoDeEnquadramento = 1;
     std::vector<int> quadroDesenquadrado;
     
     switch(tipoDeEnquadramento){
@@ -209,6 +215,25 @@ std::vector<int> CamadaEnlaceReceptoraEnquadramentoContagemDeCaracteres(std::vec
 }
 
 std::vector<int> CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
+    std::vector<int> flag = {0,0,0,0,1,1,1,1};
+    int flag_size = flag.size();
+    int quadro_size = quadro.size();
+    bool flags_found = true;
+    for (int i = 0; i < flag_size; i++) {
+        if (quadro[i] != flag[i] or quadro[quadro_size-flag_size+i] != flag[i]) {
+            flags_found = false;
+        }
+    }
+
+    if (!flags_found) {
+        std::cout << "Quadro recebido é diferente do enviado!\n";
+    }
+
+    for (int i = 0; i < flag_size; i++) {
+        quadro.erase(quadro.begin());
+        quadro.pop_back();
+    }
+
     return quadro;
 }
 
