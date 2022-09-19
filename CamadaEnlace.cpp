@@ -50,6 +50,68 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(
 }
 
 std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<int> quadro){
+    int quantidade = quadro.size() /8;
+    std::bitset<8> byte;
+    std::bitset<8> flag{"01001001"}; //I
+    std::bitset<8> scape{"11111110"};
+
+     int k,j,i,l;
+//     for(int i = 0; i < quadro.size(); i++){
+//         if(quadro[i] == 1){
+//             std::cout << '1';
+//         }
+//         else{
+//             std::cout << '0';
+//         }
+//         if((i+1)%8 == 0) std::cout << ' ';
+//     }
+// std::cout << '\n';
+
+    for( k = 0; k < quantidade; k++){
+        for(i = 0; i < 8; i++){
+            //std::cout << "quadro[" << (8*k) + i<< "] = " << quadro [(8*k) + i] << std::endl;
+            byte[7-i] = quadro[ (8*k) + i ];
+            // std::cout << byte[7-i];
+            // std::cout << '\n';
+        }
+
+        if(byte == flag || byte == scape){
+            l=0;
+            for(j = ((8*k) + i) - 8 ; j < (8*k) + i ;j++){
+                //std::cout << j;
+                //std::cout << '\n';
+                quadro.insert(quadro.begin()+j, scape[7-l]);
+                l++;
+            }
+            quantidade+=1;
+            k+=1;
+            
+        }
+    }
+   
+    for(i=0;i<8;i++){
+        quadro.insert(quadro.begin(),flag[i]);
+    }
+    for(i=0;i<8;i++){
+        quadro.insert(quadro.end(),flag[7-i]);
+
+    }
+
+
+    // for(int i = 0; i < quadro.size(); i++){
+    //     if(quadro[i] == 1){
+    //         std::cout << '1';
+    //     }
+    //     else{
+    //         std::cout << '0';
+    //     }
+    //     if((i+1)%8 == 0) std::cout << ' ';
+    // }
+    // std::cout << '\n';
+
+
+    return quadro;
+}
     return quadro;
 }
 
