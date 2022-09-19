@@ -54,7 +54,7 @@ std::vector<int> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::
 }
 
 std::vector<int> CamadaEnlaceTransmissoraControleDeErro(std::vector<int> quadro) {
-    int tipoDeControleDeErro = 2;
+    int tipoDeControleDeErro = 1;
     std::vector<int> quadroControleErro;
 
     switch (tipoDeControleDeErro) {
@@ -85,7 +85,41 @@ std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::
 
 // Realiza controle de erro da transmissão utilizando o Código de Redundância Cíclica
 std::vector<int> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<int> quadro) {
-    // implementar // usar polinomio CRC-32(IEEE 802)
+    // Polinomio CRC-32(IEEE 802)
+    std::vector<int> crc32 = {1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,1,1,1,0,1,1,0,1,1,0,1,1,1};
+    int crc_size = crc32.size();
+    std::vector<int> remainder;
+    // Bits extras para comportar o resto da divisão.
+    for (int i = 0; i < crc_size; i++) {
+        quadro.push_back(0);
+        remainder.push_back(quadro[i]);
+    }
+
+    // Função de XOR entre dois vetores.
+    auto vector_xor = [](std::vector<int> &a, std::vector<int> &b) {
+        std::vector<int> c(a.size());
+        for (int i = 0; i < a.size(); i++) {
+            c[i] = a[i] ^ b[i];
+        }
+        return c;
+    };
+
+    // Realiza a divisão do quadro pelo crc32.
+    int quadro_size = quadro.size();
+    for (int i = crc_size; i < quadro_size; i++) {
+        if (remainder[0] != 0) {
+            remainder = vector_xor(remainder, crc32);
+        }
+        assert(remainder[0] == 0);
+        remainder.erase(remainder.begin());
+        remainder.push_back(quadro[i]);
+    }
+
+    // Insere o resto da divisão no quadro.
+    for (int i = quadro_size - crc_size, j = 0; i < quadro_size; i++, j++) {
+        quadro[i] ^= remainder[j];
+    }
+
     return quadro;
 }
 
@@ -179,7 +213,7 @@ std::vector<int> CamadaEnlaceReceptoraEnquadramentoInsercaoDeBytes(std::vector<i
 }
 
 std::vector<int> CamadaEnlaceReceptoraControleDeErro(std::vector<int> quadro) {
-    int tipoDeControleDeErro = 2;
+    int tipoDeControleDeErro = 1;
     std::vector<int> quadroControleErro;
 
     switch (tipoDeControleDeErro) {
@@ -203,14 +237,55 @@ std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vec
         bitParidade ^= quadro[i];
     }
     if (bitParidade) {
-        std::cout << "Erro identificado utilizando método de bit de paridade!" << std::endl;
+        std::cout << "Erro identificado utilizando método de Bit de Paridade!" << std::endl;
     }
     quadro.pop_back();
     return quadro;
 }
 
 std::vector<int> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<int> quadro) {
-    // impementar
+    std::vector<int> crc32 = {1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,1,1,1,0,1,1,0,1,1,0,1,1,1};
+    int crc_size = crc32.size();
+
+    std::vector<int> remainder;
+    for (int i = 0; i < crc_size; i++) {
+        remainder.push_back(quadro[i]);
+    }
+
+    // Função de XOR entre dois vetores.
+    auto vector_xor = [](std::vector<int> &a, std::vector<int> &b) {
+        std::vector<int> c(a.size());
+        for (int i = 0; i < a.size(); i++) {
+            c[i] = a[i] ^ b[i];
+        }
+        return c;
+    };
+
+    // Realiza a divisão do quadro pelo crc32.
+    int quadro_size = quadro.size();
+    for (int i = crc_size; i < quadro_size; i++) {
+        if (remainder[0] != 0) {
+            remainder = vector_xor(remainder, crc32);
+        }
+        assert(remainder[0] == 0);
+        remainder.erase(remainder.begin());
+        remainder.push_back(quadro[i]);
+    }
+
+    // Verifica se o resto é igual a 0.
+    bool equalToZero = true;
+    for (int i = 0; i < crc_size; i++) {
+        equalToZero &= (remainder[i] == 0);
+    }
+
+    if (!equalToZero) {
+        std::cout << "Erro identificado utilizando método de Código de Redundância Cíclica!" << std::endl;
+    }
+
+    // Remove os bits extras contendo o resto da divisão.
+    for (int i = 0; i < crc_size; i++) {
+        quadro.pop_back();
+    }
     return quadro;
 }
 
